@@ -1,5 +1,5 @@
 function control2 () {
-    if (E == 0 && (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1 && maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 1)) {
+    if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1 && maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 1) {
         maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CCW, V / 2)
     } else {
         PID()
@@ -7,13 +7,6 @@ function control2 () {
 }
 function PID () {
     E = maqueen.readPatrol(maqueen.Patrol.PatrolLeft) - maqueen.readPatrol(maqueen.Patrol.PatrolRight)
-    if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1 && maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 1) {
-        if (preE < 0) {
-            E = -2
-        } else if (preE > 0) {
-            E = 2
-        }
-    }
     cuE = cuE + E
     dE = E - preE
     preE = E
@@ -54,8 +47,8 @@ let I = 0
 let P = 0
 let V = 0
 V = 100
-P = 25
-I = 0
+P = 50
+I = 5
 D = 0
 cuE = 0
 preE = 0
