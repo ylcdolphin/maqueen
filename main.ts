@@ -47,15 +47,14 @@ let I = 0
 let P = 0
 let V = 0
 V = 100
-P = 50
-I = 5
-D = 0
+P = 75
+I = 1
+D = 5
 cuE = 0
 preE = 0
 basic.forever(function () {
     if (Mode == 1) {
         control2()
-        basic.pause(100)
     } else {
         maqueen.motorStop(maqueen.Motors.All)
     }
