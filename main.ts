@@ -1,12 +1,14 @@
 function control2 () {
-    if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1 && maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 1) {
-        maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CCW, V / 2)
+    if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 0 && maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 0) {
+        maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CCW, 30)
+        E = 0
+        cuE = cuE + preE
     } else {
         PID()
     }
 }
 function PID () {
-    E = maqueen.readPatrol(maqueen.Patrol.PatrolLeft) - maqueen.readPatrol(maqueen.Patrol.PatrolRight)
+    E = maqueen.readPatrol(maqueen.Patrol.PatrolRight) - maqueen.readPatrol(maqueen.Patrol.PatrolLeft)
     cuE = cuE + E
     dE = E - preE
     preE = E
@@ -34,28 +36,35 @@ function activate () {
         maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, VR)
     }
 }
-let Mode = 0
 let VR = 0
 let VL = 0
 let VD = 0
 let dE = 0
 let E = 0
+let Mode = 0
 let preE = 0
 let cuE = 0
 let D = 0
 let I = 0
 let P = 0
 let V = 0
-V = 100
-P = 75
+V = 110
+P = 90
 I = 1
 D = 5
 cuE = 0
 preE = 0
-basic.forever(function () {
-    if (Mode == 1) {
-        control2()
-    } else {
+Mode = 0
+while (Mode == 0) {
+    basic.pause(100)
+}
+basic.showIcon(IconNames.Happy)
+while (Mode == 1) {
+    if (maqueen.Ultrasonic(PingUnit.Centimeters) < 7) {
         maqueen.motorStop(maqueen.Motors.All)
+    } else {
+        control2()
     }
-})
+}
+maqueen.motorStop(maqueen.Motors.All)
+basic.clearScreen()
