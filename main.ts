@@ -1,14 +1,14 @@
 function control2 () {
-    if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 0 && maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 0) {
+    if (maqueen.readPatrol(maqueen.Patrol.PatrolLeft) == 1 && maqueen.readPatrol(maqueen.Patrol.PatrolRight) == 1) {
         maqueen.motorRun(maqueen.Motors.All, maqueen.Dir.CCW, 30)
-        E = 0
+        preE = 0
         cuE = cuE + preE
     } else {
         PID()
     }
 }
 function PID () {
-    E = maqueen.readPatrol(maqueen.Patrol.PatrolRight) - maqueen.readPatrol(maqueen.Patrol.PatrolLeft)
+    E = maqueen.readPatrol(maqueen.Patrol.PatrolLeft) - maqueen.readPatrol(maqueen.Patrol.PatrolRight)
     cuE = cuE + E
     dE = E - preE
     preE = E
@@ -26,12 +26,16 @@ IR.IR_callbackUser(function (message) {
 })
 function activate () {
     if (VL < 0) {
-        maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CCW, VL * -1)
+        maqueen.motorStop(maqueen.Motors.M1)
+    } else if (VL > 255) {
+        maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CW, 255)
     } else {
         maqueen.motorRun(maqueen.Motors.M1, maqueen.Dir.CW, VL)
     }
     if (VR < 0) {
-        maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CCW, VR * -1)
+        maqueen.motorStop(maqueen.Motors.M2)
+    } else if (VL > 255) {
+        maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, 255)
     } else {
         maqueen.motorRun(maqueen.Motors.M2, maqueen.Dir.CW, VR)
     }
@@ -50,21 +54,15 @@ let P = 0
 let V = 0
 V = 110
 P = 90
-I = 1
-D = 5
+I = 0
+D = 50
 cuE = 0
 preE = 0
 Mode = 0
 while (Mode == 0) {
     basic.pause(100)
 }
-basic.showIcon(IconNames.Happy)
 while (Mode == 1) {
-    if (maqueen.Ultrasonic(PingUnit.Centimeters) < 7) {
-        maqueen.motorStop(maqueen.Motors.All)
-    } else {
-        control2()
-    }
+    control2()
 }
 maqueen.motorStop(maqueen.Motors.All)
-basic.clearScreen()
